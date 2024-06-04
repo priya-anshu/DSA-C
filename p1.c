@@ -54,15 +54,35 @@ void display(node *start) {
 }
 
 // Swap nodes in pairs
-node *swap(node* start) {
-    node *current = start;
-    while (current != NULL && current->next != NULL) {
-        int temp = current->info;
-        current->info = current->next->info;
-        current->next->info = temp;
-        current = current->next->next;
+node* swap(node* start) {
+        // if linklist is empty
+    if (start == NULL || start->next == NULL) {
+        return start;
     }
-    return start;
+
+    node *prev = NULL;
+    node *current = start;
+    node *new_start = start->next;
+
+    while (current != NULL && current->next != NULL) {
+        node *next_pair = current->next->next;
+        node *second = current->next;
+
+        // Swap the nodes
+        second->next = current;
+        current->next = next_pair;
+
+        // Update the previous node's next to point to the new first node of the pair
+        if (prev != NULL) {
+            prev->next = second;
+        }
+
+        // Move to the next pair
+        prev = current;
+        current = next_pair;
+    }
+
+    return new_start;
 }
 
 // Swap display
@@ -77,8 +97,10 @@ int main() {
         printf("\nLink List Menu\n");
         printf("1. Create\n");
         printf("2. Display\n");
+
         printf("3. Swap nodes in pair\n");
         printf("4. Display nodes after swapping\n");
+
         printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &ch);
