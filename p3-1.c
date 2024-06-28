@@ -53,35 +53,30 @@ void display(node *start) {
 }
 
 // Retain M nodes and delete next N nodes
-void retain_and_delete(node *start, int M, int N) {
-    node *current = start;
-    node *temp;
+node* retain(node*start,int m,int n){
+    node*m1 = start;
+    node* n1 = NULL;
 
-    while (current != NULL) {
-        // Retain M nodes
-        for (int i = 1; i < M && current != NULL; i++) {
-            current = current->next;
-        }
+    while(n1 != NULL){
+    for(int i=1; i<=m; i++){
+        m1 = m1->next;
+    }
 
-        if (current == NULL) return;
+    n1 = m1->next;
+    printf("%d",n1->info);
+    
+    // Deletion upto Nth position
+    node*temp = n1->next;
+    for(int i=1; i<=n;i++){
+        node* del = n1->next;
+        free(temp);
+        temp = del;
+    }
+    n1->next = temp;
 
-        // Delete next N nodes
-        temp = current->next;
-        for (int i = 1; i <= N && temp != NULL; i++) {
-            node *next = temp->next;
-            free(temp);
-            temp = next;
-        }
-        // Connect the retained nodes to the rest of the list
-        current->next = temp;
-
-        
-        if (temp != NULL) {
-        temp->prev->next = current;
-        current = temp;
-        break;
-        }
-        current = temp;
+    if(temp != NULL)
+    temp ->prev = n1;
+    n1 = temp;
     }
 }
 
@@ -89,10 +84,10 @@ int main() {
     int ch = 0;
     do {
         printf("\nLink List Menu\n");
-        printf("1. Create\n");
-        printf("2. Display\n");
+        printf("1. Create\t");
+        printf("2. Display\t");
         printf("3. Retain and Delete\n");
-        printf("4. Exit\n\n");
+        printf("12. Exit\n\n");
         scanf("%d", &ch);
 
         switch (ch) {
@@ -109,21 +104,23 @@ int main() {
             int M, N;
             printf("Enter the number of nodes to retain (M): ");
             scanf("%d", &M);
+            
             printf("Enter the number of nodes to delete (N): ");
             scanf("%d", &N);
-            retain_and_delete(start, M, N);
+
+            retain(start, M, N);
             printf("Link List after retaining %d nodes and deleting next %d nodes:\n", M, N);
             display(start);
             break;
         }
 
-        case 4:
+        case 12:
             printf("Exiting...\n");
             exit(0);
 
         default:
             printf("Invalid Choice\n");
         }
-    } while (ch != 4);
+    } while (ch != 12);
     return 0;
 }

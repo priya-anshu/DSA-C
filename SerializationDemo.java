@@ -13,9 +13,9 @@ class Note implements Serializable {
 
     @Override
     public String toString() {
-        return "Note{" +
+        return "Note {\n\t\t" +
                 "title='" + title + '\'' +
-                ", content='" + content + '\'' +
+                ", \ncontent='" + content + '\'' +
                 '}';
     }
 }

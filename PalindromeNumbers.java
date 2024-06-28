@@ -11,6 +11,7 @@ public class PalindromeNumbers {
 
         // Step 2 and 3: Read the numbers and write palindromes to palindromeOnly.txt
         writePalindromesToFile(numbersFile, palindromeFile);
+        
     }
 
     // Method to create Number.txt with numbers from 111 to 999

@@ -108,6 +108,7 @@ int main() {
 
         case 3:
             split(start);
+            printf("\nLinked List Splits Successfully\n");
             break;
 
         case 4:
