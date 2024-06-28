@@ -1,95 +1,202 @@
-#include<stdio.h>
-#include<malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-struct node{
-    int data;
-    struct node* left;
-    struct node* right;
-};
+// Define the structure of the tree node
+typedef struct Node {
+    int info;
+    struct Node* left;
+    struct Node* right;
+} Node;
 
-struct node* createNode(int data){
-    struct node *n; // creating a node pointer
-    n = (struct node *) malloc(sizeof(struct node)); // Allocating memory in the heap
-    n->data = data; // Setting the data
-    n->left = NULL; // Setting the left and right children to NULL
-    n->right = NULL; // Setting the left and right children to NULL
-    return n; // Finally returning the created node
+// Function to create a new node
+struct Node* create(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->left = NULL;
+    newNode->info = data;
+    newNode->right = NULL;
+    return newNode;
 }
 
-void preOrder(struct  node* root){
-    if(root!=NULL){
-        printf("%d ", root->data);
+// Function to insert a new node into the BST
+Node* insert(Node* root, int data) {
+    if (root == NULL) {
+        return create(data);
+    }
+    if (data < root->info) {
+        root->left = insert(root->left, data);
+    } else if (data > root->info) {
+        root->right = insert(root->right, data);
+    }
+    return root;
+}
+
+// Function to count total leaf nodes
+int leafNode(Node* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    if (root->left == NULL && root->right == NULL) {
+        return 1;
+    }
+    return leafNode(root->left) + leafNode(root->right);
+}
+
+// Function to count nodes with only left child
+int leftChild(Node* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    if (root->left != NULL && root->right == NULL) {
+        return 1 + leftChild(root->left) + leftChild(root->right);
+    }
+    return leftChild(root->left) + leftChild(root->right);
+}
+
+// Function to count nodes with only right child
+int rightChild(Node* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    if (root->left == NULL && root->right != NULL) {
+        return 1 + rightChild(root->left) + rightChild(root->right);
+    }
+    return rightChild(root->left) + rightChild(root->right);
+}
+
+// Function to count nodes with both left and right children
+int bothChild(Node* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    if (root->left != NULL && root->right != NULL) {
+        return 1 + bothChild(root->left) + bothChild(root->right);
+    }
+    return bothChild(root->left) + bothChild(root->right);
+}
+
+// Function to find the minimum value in the BST
+int findMin(Node* root) {
+    Node* current = root;
+    while (current && current->left != NULL) {
+        current = current->left;
+    }
+    return current->info;
+}
+
+// Function to find the maximum value in the BST
+int findMax(Node* root) {
+    Node* current = root;
+    while (current && current->right != NULL) {
+        current = current->right;
+    }
+    return current->info;
+}
+
+// Function for preOrder traversal
+void preOrder(Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->info);
         preOrder(root->left);
         preOrder(root->right);
     }
 }
 
-void postOrder(struct  node* root){
-    if(root!=NULL){
+// Function for postOrder traversal
+void postOrder(Node* root) {
+    if (root != NULL) {
         postOrder(root->left);
         postOrder(root->right);
-        printf("%d ", root->data);
+        printf("%d ", root->info);
     }
 }
 
-void inOrder(struct  node* root){
-    if(root!=NULL){
+// Function for inOrder traversal
+void inOrder(Node* root) {
+    if (root != NULL) {
         inOrder(root->left);
-        printf("%d ", root->data);
+        printf("%d ", root->info);
         inOrder(root->right);
     }
 }
 
-int isBST(struct  node* root){
-    static struct node *prev = NULL;
-    if(root!=NULL){
-        if(!isBST(root->left)){
-            return 0;
-        }
-        if(prev!=NULL && root->data <= prev->data){
-            return 0;
-        }
-        prev = root;
-        return isBST(root->right);
-    }
-    else{
-        return 1;
-    }
+// Function to display the menu
+void displayMenu() {
+    printf("\nMenu:\n");
+    printf("1. Insert Node\n");
+    printf("2. Count Total Leaf Nodes\n");
+    printf("3. Count Nodes with Only Left Child\n");
+    printf("4. Count Nodes with Only Right Child\n");
+    printf("5. Count Nodes with Both Children\n");
+    printf("6. Find Minimum Value\n");
+    printf("7. Find Maximum Value\n");
+    printf("8. PreOrder Traversal\n");
+    printf("9. PostOrder Traversal\n");
+    printf("10. InOrder Traversal\n");
+    printf("11. Exit\n");
+    printf("Enter your choice: ");
 }
 
-int main(){
-     
-    // Constructing the root node - Using Function (Recommended)
-    struct node *p = createNode(5);
-    struct node *p1 = createNode(3);
-    struct node *p2 = createNode(6);
-    struct node *p3 = createNode(1);
-    struct node *p4 = createNode(4);
-    // Finally The tree looks like this:
-    /*      5
-    //     / \
-    //    3   6
-    //   / \
-    //  1   4  
-    */
-    // Linking the root node with left and right children
-    p->left = p1;
-    p->right = p2;
-    p1->left = p3;
-    p1->right = p4;
+int main() {
+    struct Node* root = NULL;
+    int choice, data;
 
-    // preOrder(p);
-    // printf("\n");
-    // postOrder(p); 
-    // printf("\n");
-    inOrder(p);
-    printf("\n");
-    // printf("%d", isBST(p)); 
-    if(isBST(p)){
-        printf("This is a bst" );
+    while (1) {
+        displayMenu();
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the value to insert: ");
+                scanf("%d", &data);
+                root = insert(root, data);
+                break;
+            case 2:
+                printf("Total leaf nodes: %d\n", leafNode(root));
+                break;
+            case 3:
+                printf("Nodes with only left child: %d\n", leftChild(root));
+                break;
+            case 4:
+                printf("Nodes with only right child: %d\n", rightChild(root));
+                break;
+            case 5:
+                printf("Nodes with both children: %d\n", bothChild(root));
+                break;
+            case 6:
+                if (root) {
+                    printf("Minimum value in the BST: %d\n", findMin(root));
+                } else {
+                    printf("The tree is empty.\n");
+                }
+                break;
+            case 7:
+                if (root) {
+                    printf("Maximum value in the BST: %d\n", findMax(root));
+                } else {
+                    printf("The tree is empty.\n");
+                }
+                break;
+            case 8:
+                printf("PreOrder Traversal: ");
+                preOrder(root);
+                printf("\n");
+                break;
+            case 9:
+                printf("PostOrder Traversal: ");
+                postOrder(root);
+                printf("\n");
+                break;
+            case 10:
+                printf("InOrder Traversal: ");
+                inOrder(root);
+                printf("\n");
+                break;
+            case 11:
+                exit(0);
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
     }
-    else{
-        printf("This is not a bst");
-    }
+
     return 0;
 }
